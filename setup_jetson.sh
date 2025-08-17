@@ -52,6 +52,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 PIN_SCRIPT="${SCRIPT_DIR}/scripts/pin_to_dock.sh"
 TERMINAL_FONT_SCRIPT="${SCRIPT_DIR}/scripts/set_terminal_font.sh"
 VSCODE_SCRIPT="${SCRIPT_DIR}/scripts/install_vscode.sh"
+FIREFOX_SCRIPT="${SCRIPT_DIR}/scripts/utils/install_firefox-esr.sh"
 
 # --- Script Checks ---
 log_message "INFO" "Checking for necessary helper scripts..."
@@ -121,21 +122,28 @@ sudo apt update
 log_message "INFO" "System update completed."
 
 # --- Chromium Installation ---
-log_message "INFO" "Installing Chromium via snap..."
+log_message "INFO" "Skipping Chromium via snap (BROKEN)..."
 # Optional: Use log_command_output for detailed snap logs
 # log_command_output snap install chromium
 # Note: I've had issues with installation using
 # sudo snap install chromium
 # apt install still uses the snap installer, but seems to have less issues
-sudo apt install chromium-browser
-log_message "INFO" "Chromium installation completed."
+#sudo apt install chromium-browser
+#log_message "INFO" "Chromium installation completed."
 
-# Pin Chromium to dock
+# Install Firefox ESR (lighter than Chromium)
+log_message "INFO" "Running Firefox ESR installation script: $FIREFOX_SCRIPT..."
+# Optional: Use log_command_output if you want detailed Firefox ESR script logs
+# log_command_output sudo bash "$FIREFOX_SCRIPT"
+sudo bash "$FIREFOX_SCRIPT"
+log_message "INFO" "Firefox ESR installation completed."
+
+# Pin Firefox to dock
 if [ -n "$PIN_SCRIPT" ]; then
-  log_message "INFO" "Pinning Chromium to the dock..."
-  bash "$PIN_SCRIPT" chromium_chromium.desktop || log_message "WARN" "Failed to pin Chromium to dock. Script: $PIN_SCRIPT"
+  log_message "INFO" "Pinning Firefox to the dock..."
+  bash "$PIN_SCRIPT" firefox-esr.desktop || log_message "WARN" "Failed to pin Chromium to dock. Script: $PIN_SCRIPT"
 else
-  log_message "INFO" "Skipping Chromium pinning (script not found)."
+  log_message "INFO" "Skipping Firefox pinning (script not found)."
 fi
 
 # --- Python pip Installation ---
